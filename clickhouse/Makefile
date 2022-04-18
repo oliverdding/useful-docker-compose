@@ -1,0 +1,24 @@
+.PHONY: config
+config:
+	rm -rf clickhouse01 clickhouse02 clickhouse03 clickhouse04
+	mkdir -p clickhouse01/{config,data} clickhouse02/{config,data} clickhouse03/{config,data} clickhouse04/{config,data}
+	REPLICA=01 SHARD=01 envsubst < config.xml > clickhouse01/config/config.xml
+	REPLICA=02 SHARD=01 envsubst < config.xml > clickhouse02/config/config.xml
+	REPLICA=03 SHARD=02 envsubst < config.xml > clickhouse03/config/config.xml
+	REPLICA=04 SHARD=02 envsubst < config.xml > clickhouse04/config/config.xml
+	cp users.xml clickhouse01/config/users.xml
+	cp users.xml clickhouse02/config/users.xml
+	cp users.xml clickhouse03/config/users.xml
+	cp users.xml clickhouse04/config/users.xml
+
+.PHONY: up
+up:
+	docker-compose up -d --scale zookeeper=3
+
+.PHONY: start
+start:
+	docker-compose start --scale zookeeper=3
+
+.PHONY: down
+down:
+	docker-compose down

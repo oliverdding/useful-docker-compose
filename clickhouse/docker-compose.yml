@@ -1,0 +1,139 @@
+version: "3.9"
+
+services:
+  zookeeper:
+    image: 'zookeeper:3.5'
+    networks:
+      - clickhouse-network
+
+  clickhouse01:
+    build:
+      dockerfile: Dockerfile
+      context: ./clickhouse01
+    container_name: clickhouse01
+    hostname: clickhouse01
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 10G
+          pids: 1
+        reservations:
+          cpus: '1'
+          memory: 1G
+    networks:
+      clickhouse-network:
+        ipv4_address: 172.23.0.11
+    ports:
+      - "127.0.0.1:8123:8123"
+      - "127.0.0.1:9000:9000"
+    volumes:
+      - ${PWD}/clickhouse01/config:/etc/clickhouse-server
+      - ${PWD}/clickhouse01/data:/var/lib/clickhouse
+    depends_on:
+      - zookeeper
+  clickhouse02:
+    image: yandex/clickhouse-server:21
+    container_name: clickhouse02
+    hostname: clickhouse02
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 10G
+          pids: 1
+        reservations:
+          cpus: '1'
+          memory: 1G
+    networks:
+      clickhouse-network:
+        ipv4_address: 172.23.0.12
+    volumes:
+      - ${PWD}/clickhouse02/config:/etc/clickhouse-server
+      - ${PWD}/clickhouse02/data:/var/lib/clickhouse
+    depends_on:
+      - zookeeper
+  clickhouse03:
+    image: yandex/clickhouse-server:21
+    container_name: clickhouse03
+    hostname: clickhouse03
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 10G
+          pids: 1
+        reservations:
+          cpus: '1'
+          memory: 1G
+    networks:
+      clickhouse-network:
+        ipv4_address: 172.23.0.13
+    volumes:
+      - ${PWD}/clickhouse03/config:/etc/clickhouse-server
+      - ${PWD}/clickhouse03/data:/var/lib/clickhouse
+    depends_on:
+      - zookeeper
+  clickhouse04:
+    image: yandex/clickhouse-server:21
+    container_name: clickhouse04
+    hostname: clickhouse04
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 10G
+          pids: 1
+        reservations:
+          cpus: '1'
+          memory: 1G
+    networks:
+      clickhouse-network:
+        ipv4_address: 172.23.0.14
+    volumes:
+      - ${PWD}/clickhouse04/config:/etc/clickhouse-server
+      - ${PWD}/clickhouse04/data:/var/lib/clickhouse
+    depends_on:
+      - zookeeper
+
+  nginx:
+    build: 
+      dockerfile: Dockerfile
+      context: ./nginx-docker
+    networks:
+      - clickhouse-network
+    ports: 
+      - "8123:8123"
+      - "9000:9000"
+    depends_on:
+      - clickhouse01
+      - clickhouse02
+      - clickhouse03
+      - clickhouse04
+
+networks:
+  clickhouse-network:
+    name: clickhouse-network
+    ipam:
+      config:
+        - subnet: 172.23.0.0/24

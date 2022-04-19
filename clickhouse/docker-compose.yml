@@ -144,17 +144,17 @@ services:
       - zookeeper03
 
   nginx:
-    build:
-      dockerfile: Dockerfile
-      context: ./nginx-docker
+    image: 'bitnami/nginx:latest'
     container_name: nginx
     hostname: nginx
     networks:
       clickhouse-network:
         ipv4_address: 172.23.0.10
+    volumes:
+      - ${PWD}/nginx.conf:/opt/bitnami/nginx/conf/nginx.conf:ro
     ports:
-      - "8123:8123"
-      - "9000:9000"
+      - '8123:8123'
+      - '9000:9000'
     depends_on:
       - clickhouse01
       - clickhouse02

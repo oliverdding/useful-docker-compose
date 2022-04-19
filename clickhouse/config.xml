@@ -61,15 +61,15 @@
 
     <zookeeper>
         <node>
-            <host>zookeeper-1</host>
+            <host>zookeeper01</host>
             <port>2181</port>
         </node>
         <node>
-            <host>zookeeper-2</host>
+            <host>zookeeper02</host>
             <port>2181</port>
         </node>
         <node>
-            <host>zookeeper-3</host>
+            <host>zookeeper03</host>
             <port>2181</port>
         </node>
     </zookeeper>

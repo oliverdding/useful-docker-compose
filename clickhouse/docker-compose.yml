@@ -1,15 +1,27 @@
 version: "3.9"
 
 services:
-  zookeeper:
+  zookeeper01:
     image: 'zookeeper:3.5'
+    container_name: zookeeper01
+    hostname: zookeeper01
+    networks:
+      - clickhouse-network
+  zookeeper02:
+    image: 'zookeeper:3.5'
+    container_name: zookeeper02
+    hostname: zookeeper02
+    networks:
+      - clickhouse-network
+  zookeeper03:
+    image: 'zookeeper:3.5'
+    container_name: zookeeper03
+    hostname: zookeeper03
     networks:
       - clickhouse-network
 
   clickhouse01:
-    build:
-      dockerfile: Dockerfile
-      context: ./clickhouse01
+    image: yandex/clickhouse-server:21
     container_name: clickhouse01
     hostname: clickhouse01
     ulimits:
@@ -22,21 +34,18 @@ services:
         limits:
           cpus: '4'
           memory: 10G
-          pids: 1
         reservations:
-          cpus: '1'
           memory: 1G
     networks:
       clickhouse-network:
         ipv4_address: 172.23.0.11
-    ports:
-      - "127.0.0.1:8123:8123"
-      - "127.0.0.1:9000:9000"
     volumes:
       - ${PWD}/clickhouse01/config:/etc/clickhouse-server
       - ${PWD}/clickhouse01/data:/var/lib/clickhouse
     depends_on:
-      - zookeeper
+      - zookeeper01
+      - zookeeper02
+      - zookeeper03
   clickhouse02:
     image: yandex/clickhouse-server:21
     container_name: clickhouse02
@@ -51,9 +60,7 @@ services:
         limits:
           cpus: '4'
           memory: 10G
-          pids: 1
         reservations:
-          cpus: '1'
           memory: 1G
     networks:
       clickhouse-network:
@@ -62,7 +69,9 @@ services:
       - ${PWD}/clickhouse02/config:/etc/clickhouse-server
       - ${PWD}/clickhouse02/data:/var/lib/clickhouse
     depends_on:
-      - zookeeper
+      - zookeeper01
+      - zookeeper02
+      - zookeeper03
   clickhouse03:
     image: yandex/clickhouse-server:21
     container_name: clickhouse03
@@ -77,9 +86,7 @@ services:
         limits:
           cpus: '4'
           memory: 10G
-          pids: 1
         reservations:
-          cpus: '1'
           memory: 1G
     networks:
       clickhouse-network:
@@ -88,7 +95,9 @@ services:
       - ${PWD}/clickhouse03/config:/etc/clickhouse-server
       - ${PWD}/clickhouse03/data:/var/lib/clickhouse
     depends_on:
-      - zookeeper
+      - zookeeper01
+      - zookeeper02
+      - zookeeper03
   clickhouse04:
     image: yandex/clickhouse-server:21
     container_name: clickhouse04
@@ -103,9 +112,7 @@ services:
         limits:
           cpus: '4'
           memory: 10G
-          pids: 1
         reservations:
-          cpus: '1'
           memory: 1G
     networks:
       clickhouse-network:
@@ -114,15 +121,17 @@ services:
       - ${PWD}/clickhouse04/config:/etc/clickhouse-server
       - ${PWD}/clickhouse04/data:/var/lib/clickhouse
     depends_on:
-      - zookeeper
+      - zookeeper01
+      - zookeeper02
+      - zookeeper03
 
   nginx:
-    build: 
+    build:
       dockerfile: Dockerfile
       context: ./nginx-docker
     networks:
       - clickhouse-network
-    ports: 
+    ports:
       - "8123:8123"
       - "9000:9000"
     depends_on:

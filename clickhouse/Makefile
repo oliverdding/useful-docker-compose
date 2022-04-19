@@ -1,7 +1,7 @@
 .PHONY: config
 config:
-	rm -rf clickhouse01 clickhouse02 clickhouse03 clickhouse04
-	mkdir -p clickhouse01/{config,data} clickhouse02/{config,data} clickhouse03/{config,data} clickhouse04/{config,data}
+	rm -rf clickhouse0{1,2,3,4}
+	mkdir -p clickhouse0{1,2,3,4}/{config,data}
 	REPLICA=01 SHARD=01 envsubst < config.xml > clickhouse01/config/config.xml
 	REPLICA=02 SHARD=01 envsubst < config.xml > clickhouse02/config/config.xml
 	REPLICA=03 SHARD=02 envsubst < config.xml > clickhouse03/config/config.xml
@@ -22,3 +22,7 @@ start:
 .PHONY: down
 down:
 	docker-compose down
+
+.PHONY: clean
+clean:
+	rm -rf clickhouse0{1,2,3,4}

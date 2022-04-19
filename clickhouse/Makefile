@@ -12,11 +12,11 @@ config:
 
 .PHONY: up
 up:
-	docker-compose up -d --scale zookeeper=3
+	docker-compose up -d
 
 .PHONY: start
 start:
-	docker-compose start --scale zookeeper=3
+	docker-compose start
 
 .PHONY: down
 down:

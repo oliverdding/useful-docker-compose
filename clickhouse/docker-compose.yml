@@ -24,7 +24,7 @@ services:
       clickhouse-network:
         ipv4_address: 172.23.0.12
     volumes:
-      - ${PWD}/zookeeper01:/bitnami/zookeeper
+      - ${PWD}/zookeeper02:/bitnami/zookeeper
   zookeeper03:
     image: 'bitnami/zookeeper:3.5'
     container_name: zookeeper03
@@ -36,7 +36,7 @@ services:
       clickhouse-network:
         ipv4_address: 172.23.0.13
     volumes:
-      - ${PWD}/zookeeper01:/bitnami/zookeeper
+      - ${PWD}/zookeeper03:/bitnami/zookeeper
 
   clickhouse01:
     image: yandex/clickhouse-server:21

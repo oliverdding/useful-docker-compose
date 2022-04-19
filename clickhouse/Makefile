@@ -1,7 +1,6 @@
 .PHONY: config
 config:
-	rm -rf clickhouse0{1,2,3,4}
-	mkdir -p clickhouse0{1,2,3,4}/{config,data}
+	mkdir -p clickhouse0{1,2,3,4}/{config,data} zookeeper0{1,2,3}
 	REPLICA=01 SHARD=01 envsubst < config.xml > clickhouse01/config/config.xml
 	REPLICA=02 SHARD=01 envsubst < config.xml > clickhouse02/config/config.xml
 	REPLICA=03 SHARD=02 envsubst < config.xml > clickhouse03/config/config.xml
@@ -25,4 +24,4 @@ down:
 
 .PHONY: clean
 clean:
-	rm -rf clickhouse0{1,2,3,4}
+	rm -rf clickhouse0{1,2,3,4} zookeeper0{1,2,3}

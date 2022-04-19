@@ -6,19 +6,22 @@ services:
     container_name: zookeeper01
     hostname: zookeeper01
     networks:
-      - clickhouse-network
+      clickhouse-network:
+        ipv4_address: 172.23.0.11
   zookeeper02:
     image: 'zookeeper:3.5'
     container_name: zookeeper02
     hostname: zookeeper02
     networks:
-      - clickhouse-network
+      clickhouse-network:
+        ipv4_address: 172.23.0.12
   zookeeper03:
     image: 'zookeeper:3.5'
     container_name: zookeeper03
     hostname: zookeeper03
     networks:
-      - clickhouse-network
+      clickhouse-network:
+        ipv4_address: 172.23.0.13
 
   clickhouse01:
     image: yandex/clickhouse-server:21
@@ -38,7 +41,7 @@ services:
           memory: 1G
     networks:
       clickhouse-network:
-        ipv4_address: 172.23.0.11
+        ipv4_address: 172.23.0.20
     volumes:
       - ${PWD}/clickhouse01/config:/etc/clickhouse-server
       - ${PWD}/clickhouse01/data:/var/lib/clickhouse
@@ -64,7 +67,7 @@ services:
           memory: 1G
     networks:
       clickhouse-network:
-        ipv4_address: 172.23.0.12
+        ipv4_address: 172.23.0.21
     volumes:
       - ${PWD}/clickhouse02/config:/etc/clickhouse-server
       - ${PWD}/clickhouse02/data:/var/lib/clickhouse
@@ -90,7 +93,7 @@ services:
           memory: 1G
     networks:
       clickhouse-network:
-        ipv4_address: 172.23.0.13
+        ipv4_address: 172.23.0.22
     volumes:
       - ${PWD}/clickhouse03/config:/etc/clickhouse-server
       - ${PWD}/clickhouse03/data:/var/lib/clickhouse
@@ -116,7 +119,7 @@ services:
           memory: 1G
     networks:
       clickhouse-network:
-        ipv4_address: 172.23.0.14
+        ipv4_address: 172.23.0.23
     volumes:
       - ${PWD}/clickhouse04/config:/etc/clickhouse-server
       - ${PWD}/clickhouse04/data:/var/lib/clickhouse
@@ -129,8 +132,11 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./nginx-docker
+    container_name: nginx
+    hostname: nginx
     networks:
-      - clickhouse-network
+      clickhouse-network:
+        ipv4_address: 172.23.0.10
     ports:
       - "8123:8123"
       - "9000:9000"
